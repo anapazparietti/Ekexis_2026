@@ -134,6 +134,7 @@ void loop() {
 
   // ---------- 4. ANIMACIÓN DE SELECCIÓN (sin bloquear) ----------
   if (estado == SELECCION) {
+    Serial.println("seleccionando");
     if (ahora - tInicioSeleccion < DURACION_SELECCION) {
       if (ahora - tUltimoCambioRuleta >= VELOCIDAD_RULETA) {
         tUltimoCambioRuleta = ahora;
@@ -190,7 +191,7 @@ void iniciarIntro(unsigned long ahora) {
 }
 
 void iniciarSeleccion(unsigned long ahora) {
-  Serial.println("seleccion");
+  Serial.println("seleccionando");
   apagarBiomas();
   estado = SELECCION;
   tInicioSeleccion = ahora;
@@ -278,6 +279,7 @@ void fijarColor(int numeroLed, int r, int g, int b) {
 }
 
 void apagarBiomas() {
+  Serial.println("inicio");
   digitalWrite(ledNivis, HIGH);
   digitalWrite(ledSahra, HIGH);
   digitalWrite(ledJangal, HIGH);

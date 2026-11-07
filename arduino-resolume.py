@@ -131,8 +131,8 @@ while run:
             linea = serial_conn.readline().decode('utf-8').strip() #Lectura en una línea, conversión de bytes a texto (.decode) eliminar (.strip)
             if linea == "inicio":
                 disparar_columna(1, origen="Arduino: inicio")
-            elif linea == "seleccion":
-                disparar_columna(2, origen="Arduino: seleccion")
+            elif linea == "seleccionando":
+                disparar_columna(2, origen="Arduino: seleccionando")
             elif linea == "nivis":
                 disparar_columna(3, origen="Arduino: nivis")
             elif linea == "sahra":
@@ -148,45 +148,6 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
-        # elif event.type == pygame.MOUSEMOTION:
-        #     mouse_pos = event.pos
- 
-        #     # True si el mouse está dentro del cuadrado
-        #     mouse_dentro = cuadrado.collidepoint(mouse_pos)
-
-        #     # Solo se ejecuta durante la transición:
-        #     # fuera del cuadrado -> dentro del cuadrado
-        #     if mouse_dentro and not mouse_estaba_dentro:
-        #             seleccionando = True
-        #             inicio_columna_2 = time.monotonic()
-        #             columna_2_ya_cambio = False
-        #             # Cancelar la espera para volver a la columna 1
-        #             inicio_espera_retorno = None
-        #             columna_azar_actual = None                    
-        #             disparar_columna(2,origen="Posicion del Mouse")
-        #     elif not mouse_dentro and mouse_estaba_dentro:
-        #         seleccionando = False
-        #         inicio_columna_2 = None
-        #         columna_2_ya_cambio = False
-        #         disparar_columna(1,origen="Posición del Mouse")
-                
-        #         # Si está en una columna aleatoria,
-        #         # iniciar espera de 10 segundos
-        #         if columna_actual in [3, 4, 5, 6]:
-        #             inicio_espera_retorno = time.monotonic()
-
-        #             print(
-        #                 ">> Mouse fuera del cuadrado. "
-        #                 "Esperando 10 segundos."
-        #             )
-
-        #         else:
-        #             # Si todavía estaba en la columna 2,
-        #             # volver inmediatamente a la columna 1
-        #             disparar_columna(1,origen="Salida del cuadrado")
-                    
-        #     mouse_estaba_dentro = mouse_dentro
 
         elif event.type == pygame.MOUSEMOTION:
             mouse_pos = event.pos

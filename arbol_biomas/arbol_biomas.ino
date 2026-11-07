@@ -34,6 +34,7 @@ const unsigned long DURACION_SELECCION = 4000;          // Duración de la rulet
 const unsigned long VELOCIDAD_RULETA = 150;             // Cambio de color en la ruleta (ms)
 const unsigned long DURACION_FADE = 2000;               // Duración del apagado gradual (ms)
 const unsigned long INTERVALO_FADE = 15;                // Cada cuánto se actualiza el fade (ms)
+const unsigned long TIEMPO_FLOR_ENCENDIDA = 1000;      // Cuánto queda prendida la flor después del apagado (ms). 0 = hasta la próxima vez
 
 // --- ESTADOS ---
 // ESPERA -> INTRO_FADE (indicador sube) -> INTRO_ESPERA (indicador al máximo, pausa)
@@ -57,6 +58,11 @@ unsigned long tUltimaLectura = 0;
 unsigned long tInicioSeleccion = 0;
 unsigned long tUltimoCambioRuleta = 0;
 int lecturasSinMano = 0;
+
+// Flor elegida
+bool florEncendida = false;
+unsigned long tFinApagado = 0;    // Momento en que terminó el apagado (aquí empieza a contar TIEMPO_FLOR_ENCENDIDA)
+
 
 void setup() {
   pinMode(trigPin, OUTPUT);
@@ -134,7 +140,6 @@ void loop() {
 
   // ---------- 4. ANIMACIÓN DE SELECCIÓN (sin bloquear) ----------
   if (estado == SELECCION) {
-    Serial.println("seleccionando");
     if (ahora - tInicioSeleccion < DURACION_SELECCION) {
       if (ahora - tUltimoCambioRuleta >= VELOCIDAD_RULETA) {
         tUltimoCambioRuleta = ahora;
@@ -154,6 +159,16 @@ void loop() {
   if (estado == APAGANDO) {
     actualizarFade(ahora);
   }
+
+    // ---------- 6. APAGAR LA FLOR TRAS UN TIEMPO SIN USO ----------
+  if (estado == ESPERA && florEncendida && TIEMPO_FLOR_ENCENDIDA > 0
+      && ahora - tFinApagado >= TIEMPO_FLOR_ENCENDIDA) {
+    apagarBiomas();
+    florEncendida = false;
+    Serial.println("Flor apagada por tiempo");
+    Serial.println("inicio");
+  }
+
 }
 
 // ---------- FUNCIONES ----------
@@ -185,17 +200,18 @@ void iniciarIntro(unsigned long ahora) {
   Serial.println("manos detectadas -> fade in del indicador");
   apagarTronco();
   apagarBiomas();
+  florEncendida = false;
   brilloIndicadorInicio = brilloIndicador; // Si venía apagándose, sube desde donde estaba
   tInicioIntro = ahora;
   estado = INTRO_FADE;
 }
 
 void iniciarSeleccion(unsigned long ahora) {
-  Serial.println("seleccionando");
   apagarBiomas();
   estado = SELECCION;
   tInicioSeleccion = ahora;
   tUltimoCambioRuleta = 0; // fuerza un primer cambio inmediato
+  Serial.println("seleccionando");
 }
 
 void elegirBioma() {
@@ -225,7 +241,10 @@ void elegirBioma() {
   for (int i = 1; i <= 4; i++) {
     fijarColor(i, rFijo, gFijo, bFijo);
   }
+  florEncendida = true;
 }
+
+
 
 void iniciarApagado(unsigned long ahora) {
   Serial.println("Manos retiradas -> apagando gradualmente");
@@ -250,6 +269,7 @@ void actualizarFade(unsigned long ahora) {
     // Fade terminado: tronco e indicador apagados (la flor elegida sigue encendida)
     apagarTodo();
     estado = ESPERA;
+    tFinApagado = ahora;
     Serial.println("Apagado completo");
     return;
   }
@@ -279,7 +299,6 @@ void fijarColor(int numeroLed, int r, int g, int b) {
 }
 
 void apagarBiomas() {
-  Serial.println("inicio");
   digitalWrite(ledNivis, HIGH);
   digitalWrite(ledSahra, HIGH);
   digitalWrite(ledJangal, HIGH);

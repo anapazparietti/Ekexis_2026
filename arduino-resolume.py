@@ -113,6 +113,13 @@ def disparar_columna(col_num, origen=""): # "" se fija si la señal proviene del
     columna_actual = col_num
     print(f">> [{origen}] Disparando Columna {col_num} a Resolume")
 
+#----Funcion para activar una capa
+def disparar_capa(capa_num, origen=""):
+    global capa_actual
+    osc_address = f"/composition/layer/{capa_num}/clips/2/connect"
+    client.send_message(osc_address,1)
+    capa_actual = capa_num
+    print(f">>[{origen}] Disparando Capa {capa_num} a Resolume")
 
 # ---------- REPRODUCIR COLUMNA 1 AL INICIAR ----------
 disparar_columna(
@@ -200,12 +207,12 @@ while run:
         )
         print(">>Inicio de temporizador en columna 2")
         
-        if tiempo_en_columna_2 >= 15:
+        if tiempo_en_columna_2 >= 30:
 
             columna_azar_actual = random.choice([3, 4, 5, 6])
 
             disparar_columna(
-                columna_azar_actual,origen="Temporizador de 15 segundos")
+                columna_azar_actual,origen="Temporizador de 30 segundos-python")
 
             columna_2_ya_cambio = True
 
@@ -219,7 +226,7 @@ while run:
 
         if tiempo_fuera >= 10:
 
-            disparar_columna(1,origen="10 segundos fuera del cuadrado")
+            disparar_columna(1,origen="10 segundos fuera del cuadrado-python")
 
             inicio_espera_retorno = None
             columna_azar_actual = None

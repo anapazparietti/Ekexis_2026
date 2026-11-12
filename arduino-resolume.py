@@ -64,12 +64,7 @@ posY = 640/2
 rectW = 150
 rectH = 150
 # Crear el cuadrado_blanco
-cuadrado_blanco = pygame.Rect(
-    int(posX - rectW / 2),
-    int(posY - rectH / 2),
-    rectW,
-    rectH
-)
+cuadrado_blanco = pygame.Rect(int(posX - rectW / 2),int(posY - rectH / 2),rectW,rectH)
 
 #------------VARIABLES DE ESTADO
 run = True
@@ -193,12 +188,12 @@ while run:
 
         tiempo_en_columna_2 = (time.monotonic() - inicio_columna_2)
         
-        if tiempo_en_columna_2 >= 30:
+        if tiempo_en_columna_2 >= 29:
 
             columna_azar_actual = random.choice([3, 4, 5, 6])
 
             disparar_columna(
-                columna_azar_actual,origen="Temporizador de 30 segundos-python")
+                columna_azar_actual,origen="Temporizador de 29 segundos-python")
 
             columna_2_ya_cambio = True
 

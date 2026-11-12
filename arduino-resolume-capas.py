@@ -53,10 +53,11 @@ except Exception as e: #guarda el error en la variable e
 modo_mouse = serial_conn is None
 
 #---------CONSTANTES DE TIEMPO Y CAPAS (modificar aquí para ajustar la experiencia)
-CAPA_INICIAL = 5                     # capa de la columna 2 que se activa al entrar al cuadrado
+CAPA_SELECCION = 5                     # capa de la columna 2 que se activa al entrar al cuadrado
 CAPAS_AL_AZAR = [4, 3, 2, 1]         # capas candidatas al cumplirse el temporizador
-SEGUNDOS_EN_CAPA_INICIAL = 25        # tiempo antes de elegir una capa al azar
-SEGUNDOS_RETORNO = 10                # tiempo de espera antes de volver a la columna 1
+SEGUNDOS_SELECCIONANDO = 25        # tiempo antes de elegir una capa al azar
+SEGUNDOS_RETORNO = 10                # tiempo de espera antes de volver a la columna 
+SEGUNDOS_VIDEO = 30.88
     
 # --- CONFIGURACIÓN PYGAME ---
 pygame.init()
@@ -75,7 +76,7 @@ cuadrado_blanco = pygame.Rect(int(posX - rectW / 2),int(posY - rectH / 2),rectW,
 run = True
 
 # Momento en que se activó la capa 5 (inicio del temporizador de 25 s)
-inicio_capa_inicial = None
+inicio_CAPA_SELECCION = None
 
 # Evita seleccionar varias capas al azar después de los 25 segundos
 capa_azar_ya_elegida = False
@@ -159,20 +160,20 @@ while run:
 
             # El mouse entró al cuadrado_blanco
             if mouse_dentro and not mouse_estaba_dentro:
-                print(f">>Inicio de temporizador de {SEGUNDOS_EN_CAPA_INICIAL} s en capa {CAPA_INICIAL}")
+                print(f">>Inicio de temporizador de {SEGUNDOS_SELECCIONANDO} s en capa {CAPA_SELECCION}")
                 capa_azar_ya_elegida = False
 
                 # Cancelar espera anterior
                 inicio_espera_retorno = None
                 capa_azar_actual = None
 
-                disparar_capa(CAPA_INICIAL, origen="Posición del Mouse")
+                disparar_capa(CAPA_SELECCION, origen="Posición del Mouse")
                 # El temporizador comienza en el instante exacto de la activación de la capa 5
-                inicio_capa_inicial = time.monotonic()
+                inicio_CAPA_SELECCION = time.monotonic()
 
             # El mouse salió del cuadrado_blanco
             elif not mouse_dentro and mouse_estaba_dentro:
-                inicio_capa_inicial = None
+                inicio_CAPA_SELECCION = None
                 capa_azar_ya_elegida = False
 
                 # Si ya se activó una capa al azar (4, 3, 2 o 1),
@@ -194,16 +195,16 @@ while run:
 
     # 4. Verificar si pasaron 25 segundos en la capa 5
     if (modo_mouse 
-        and capa_actual == CAPA_INICIAL 
-        and inicio_capa_inicial is not None 
+        and capa_actual == CAPA_SELECCION 
+        and inicio_CAPA_SELECCION is not None 
         and not capa_azar_ya_elegida):
         
-        tiempo_en_capa_inicial = (time.monotonic() - inicio_capa_inicial)
+        tiempo_en_CAPA_SELECCION = (time.monotonic() - inicio_CAPA_SELECCION)
         
-        if tiempo_en_capa_inicial >= SEGUNDOS_EN_CAPA_INICIAL:
+        if tiempo_en_CAPA_SELECCION >= SEGUNDOS_SELECCIONANDO:
             client.send_message("/composition/layers/5/clear", 1)
             capa_azar_actual = random.choice(CAPAS_AL_AZAR)
-            disparar_capa(capa_azar_actual, origen=f"Temporizador de {SEGUNDOS_EN_CAPA_INICIAL} segundos-python")
+            disparar_capa(capa_azar_actual, origen=f"Temporizador de {SEGUNDOS_SELECCIONANDO} segundos-python")
             capa_azar_ya_elegida = True
 
     # 5. Si el mouse salió después de seleccionar

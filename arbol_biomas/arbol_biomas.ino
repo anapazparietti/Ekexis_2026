@@ -29,8 +29,8 @@ const int DISTANCIA_MANO_CM = 10;                       // Menos de esto = hay m
 const unsigned long INTERVALO_LECTURA = 60;             // Cada cuánto se mide (ms)
 const int LECTURAS_PARA_APAGAR = 3;                     // Lecturas seguidas sin manos para apagar (evita falsos apagados)
 const unsigned long DURACION_FADE_IN_INDICADOR = 4000;  // Cuánto tarda el indicador en encenderse del todo (ms)
-const unsigned long ESPERA_ANTES_SELECCION = 3000;      // Cuánto espera encendido antes de empezar la selección (ms)
-const unsigned long DURACION_SELECCION = 4000;          // Duración de la ruleta (ms)
+const unsigned long ESPERA_ANTES_SELECCION = 1000;      // Cuánto espera encendido antes de empezar la selección (ms)
+const unsigned long DURACION_SELECCION = 29000;          // Duración de la ruleta (ms)
 const unsigned long VELOCIDAD_RULETA = 150;             // Cambio de color en la ruleta (ms)
 const unsigned long DURACION_FADE = 2000;               // Duración del apagado gradual (ms)
 const unsigned long INTERVALO_FADE = 15;                // Cada cuánto se actualiza el fade (ms)
@@ -257,6 +257,9 @@ void iniciarApagado(unsigned long ahora) {
   tInicioFade = ahora;
   tUltimoPasoFade = 0;
   estado = APAGANDO;
+  if(!florEncendida){
+      Serial.println("inicio");
+  }
 }
 
 void actualizarFade(unsigned long ahora) {

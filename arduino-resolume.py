@@ -40,12 +40,11 @@ OSC_RECEIVE_PORT = 8000
 
 
 #----CONFIGURACION SERIAL (ARDUINO)----
-PORT_ARDUINO = "COM4" #Reemplazar por tu puerto real (ver en Arduino)
-BAUD_RATE = 9600 #velocidad de transmision, debe ser identica a la declarada en Serial.begin(9600) del sketch de Arduino
+PORT_ARDUINO = "COM3" #Reemplazar por tu puerto real (ver en Arduino)
 serial_conn = None
 #graceful degradation: el programa intenta conectarse al arduino en cierto tiempo (timeout=0.01). Si falla, se captura con except y el programa continua funcionando con el mouse
 try:
-    serial_conn = serial.Serial(PORT_ARDUINO, BAUD_RATE, timeout=0.01)
+    serial_conn = serial.Serial(PORT_ARDUINO, 9600, timeout=1)
     print(f">>Conectado existosamente al Arduino en el puerto {PORT_ARDUINO}")
 except Exception as e: #guarda el error en la variable e
     print(f">>ADVERTENCIA: No se pudo conectar al Arduino ({e}) El sistema funcionará conectando con mouse")
@@ -101,13 +100,6 @@ def disparar_columna(col_num, origen=""): # "" se fija si la señal proviene del
     columna_actual = col_num
     print(f">> [{origen}] Disparando Columna {col_num} a Resolume")
 
-#----Funcion para activar una capa
-def disparar_capa(capa_num, origen=""):
-    global capa_actual
-    osc_address = f"/composition/layers/{capa_num}/clips/2/connect"
-    client.send_message(osc_address,1)
-    capa_actual = capa_num
-    print(f">>[{origen}] Disparando Capa {capa_num} a Resolume")
 
 # ---------- REPRODUCIR COLUMNA 1 AL INICIAR ----------
 disparar_columna(1, origen="Inicio del programa")
@@ -199,7 +191,7 @@ while run:
 
     # 5. Si el mouse salió después de seleccionar
     # una columna aleatoria, esperar 10 segundos
-    if (modo_mouse and inicio_espera_retorno is not None):
+    if (inicio_espera_retorno is not None):
 
         tiempo_fuera = (time.monotonic() - inicio_espera_retorno)
 
